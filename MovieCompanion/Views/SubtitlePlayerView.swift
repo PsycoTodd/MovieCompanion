@@ -6,7 +6,9 @@ struct SubtitlePlayerView: View {
 
     @Environment(\.dismiss) private var dismiss
     @StateObject private var playerViewModel = PlayerViewModel()
+    private let defaultFontSize: Double = 28
     @State private var fontSize: Double = 28
+    @GestureState private var pinchScale: CGFloat = 1.0
     @State private var seekSliderValue: Double = 0
     @State private var isDraggingSeek: Bool = false
 
@@ -17,24 +19,34 @@ struct SubtitlePlayerView: View {
             Color.black.ignoresSafeArea()
 
             VStack(spacing: 0) {
-                Spacer()
-
-                // Subtitle display — shows live transcript in yellow while syncing
-                Group {
-                    if case .listening(let transcript) = playerViewModel.speechSyncState {
-                        Text(transcript.isEmpty ? "Listening…" : transcript)
-                            .foregroundColor(.yellow)
-                    } else {
-                        Text(playerViewModel.currentLine?.text ?? "")
-                            .foregroundColor(.white)
-                            .animation(.easeInOut(duration: 0.25), value: playerViewModel.currentLine?.id)
-                    }
-                }
-                .font(.system(size: fontSize, weight: .medium))
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 40)
-
-                Spacer()
+                // Subtitle region — fills all space above controls.
+                // Color.clear + contentShape makes the whole area pinch-zoomable.
+                Color.clear
+                    .overlay(
+                        Group {
+                            if case .listening(let transcript) = playerViewModel.speechSyncState {
+                                Text(transcript.isEmpty ? "Listening…" : transcript)
+                                    .foregroundColor(.yellow)
+                            } else {
+                                Text(playerViewModel.currentLine?.text ?? "")
+                                    .foregroundColor(.white)
+                                    .animation(.easeInOut(duration: 0.25), value: playerViewModel.currentLine?.id)
+                            }
+                        }
+                        .font(.system(size: fontSize * pinchScale, weight: .medium))
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 40)
+                    )
+                    .contentShape(Rectangle())
+                    .gesture(
+                        MagnificationGesture()
+                            .updating($pinchScale) { value, state, _ in
+                                state = value
+                            }
+                            .onEnded { value in
+                                fontSize = min(max(fontSize * value, defaultFontSize), 60)
+                            }
+                    )
 
                 controlsView
                     .padding(.bottom, 32)
@@ -122,19 +134,6 @@ struct SubtitlePlayerView: View {
                 }
             )
             .tint(accent)
-            .padding(.horizontal, 20)
-
-            // Font size row
-            HStack(spacing: 8) {
-                Text("A")
-                    .font(.system(size: 12))
-                    .foregroundColor(Color(white: 0.5))
-                Slider(value: $fontSize, in: 16...48)
-                    .tint(Color(white: 0.5))
-                Text("A")
-                    .font(.system(size: 20))
-                    .foregroundColor(Color(white: 0.5))
-            }
             .padding(.horizontal, 20)
 
             // Play/Pause + Sync row
