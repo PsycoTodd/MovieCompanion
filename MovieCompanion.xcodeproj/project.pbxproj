@@ -7,49 +7,69 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C030EA0C2CE0CD7832FA255 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A9027513D7846AE05D62AC5 /* AVFoundation.framework */; };
 		0F2612A9A02B79DF3B58168F /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80BC0215FD0649A67E989C60 /* SplashView.swift */; };
 		10BFD59C25DC09ED2D30F6A0 /* SubtitlePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722F96FD9E6F5A6ADB81A018 /* SubtitlePlayerView.swift */; };
 		1B25F733C85B0669C7F69326 /* MovieLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F3668EAE2228D0D4E65981 /* MovieLibrary.swift */; };
+		2B30BE6DEB84C92C0718B525 /* SpeechSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734093A4733D325119B87113 /* SpeechSyncService.swift */; };
+		31CD4FAEB7FC402098795D0C /* SpeechSyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B39175F5BE5A6A55CDDD110 /* SpeechSyncButton.swift */; };
 		36A848EF682CFD810A536960 /* MovieCompanionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8268684B52A970DEAB5BE1D5 /* MovieCompanionApp.swift */; };
 		4DCED3BC1FC4420BBE2A6A88 /* SRTParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6451B693924A62DD8099B2 /* SRTParser.swift */; };
 		5EF6DBAEC2C9ECB4C959C0BF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F9C757B26F0F3904958F149D /* Assets.xcassets */; };
 		645A0046B0F394AB34A916B2 /* MovieLibraryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38635113E159D0B10E9BCCA /* MovieLibraryViewModel.swift */; };
+		699DA4B72E2B9E44095F7295 /* ProjectHailMary_EN.srt in Resources */ = {isa = PBXBuildFile; fileRef = F95981F5C98C68FEE0D147B6 /* ProjectHailMary_EN.srt */; };
 		6F08AACB8CE7C7C9602A0433 /* Language.swift in Sources */ = {isa = PBXBuildFile; fileRef = 345D19FC02AB7287DFD7D51D /* Language.swift */; };
 		7B026EBC4CEAEA86EFF8A518 /* MovieListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6BF540098B9FA07C9A296F0 /* MovieListView.swift */; };
 		91A8967D158A46E1E2E17DF1 /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D1D17321A2A4BC7A102EA5D /* Movie.swift */; };
 		A7D07D948F0B9B80703231D4 /* SubtitleLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EFFC3549EE549FAF3E5BC42 /* SubtitleLine.swift */; };
 		ADB38B03DA0D37785D121ABB /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30215C964F6612C9F1C31202 /* PlayerViewModel.swift */; };
-		CDC330EA2F73690E00FC016E /* ProjectHailMary_EN.srt in Resources */ = {isa = PBXBuildFile; fileRef = CDC330E92F73690E00FC016E /* ProjectHailMary_EN.srt */; };
-		CDC330EC2F73A75600FC016E /* ProjectHailMary_CN.srt in Resources */ = {isa = PBXBuildFile; fileRef = CDC330EB2F73A75600FC016E /* ProjectHailMary_CN.srt */; };
+		CED9E9962A60A83B50F0CEC3 /* Speech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0528A321BDF0B910112DDCF7 /* Speech.framework */; };
 		EF585C7578F1D954026A08D8 /* LanguageSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6686287B0FC08A6BD449F1C2 /* LanguageSelectionView.swift */; };
+		F001C94670FBBF8250539B91 /* ProjectHailMary_CN.srt in Resources */ = {isa = PBXBuildFile; fileRef = 7DB18A0412EC24D53662DC40 /* ProjectHailMary_CN.srt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0528A321BDF0B910112DDCF7 /* Speech.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Speech.framework; path = System/Library/Frameworks/Speech.framework; sourceTree = SDKROOT; };
 		1D1D17321A2A4BC7A102EA5D /* Movie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movie.swift; sourceTree = "<group>"; };
 		30215C964F6612C9F1C31202 /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModel.swift; sourceTree = "<group>"; };
 		345D19FC02AB7287DFD7D51D /* Language.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Language.swift; sourceTree = "<group>"; };
+		5B39175F5BE5A6A55CDDD110 /* SpeechSyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechSyncButton.swift; sourceTree = "<group>"; };
 		5DDFCD5BDC4DDBBEBA741896 /* MovieCompanion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieCompanion.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6686287B0FC08A6BD449F1C2 /* LanguageSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSelectionView.swift; sourceTree = "<group>"; };
 		66A5E45A38F6F1653A4024C7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		6EFFC3549EE549FAF3E5BC42 /* SubtitleLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleLine.swift; sourceTree = "<group>"; };
 		722F96FD9E6F5A6ADB81A018 /* SubtitlePlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlePlayerView.swift; sourceTree = "<group>"; };
+		734093A4733D325119B87113 /* SpeechSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechSyncService.swift; sourceTree = "<group>"; };
+		7A9027513D7846AE05D62AC5 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		7DB18A0412EC24D53662DC40 /* ProjectHailMary_CN.srt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ProjectHailMary_CN.srt; sourceTree = "<group>"; };
 		80BC0215FD0649A67E989C60 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		8268684B52A970DEAB5BE1D5 /* MovieCompanionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCompanionApp.swift; sourceTree = "<group>"; };
 		A38635113E159D0B10E9BCCA /* MovieLibraryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieLibraryViewModel.swift; sourceTree = "<group>"; };
 		B6BF540098B9FA07C9A296F0 /* MovieListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieListView.swift; sourceTree = "<group>"; };
-		CDC330E92F73690E00FC016E /* ProjectHailMary_EN.srt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ProjectHailMary_EN.srt; sourceTree = "<group>"; };
-		CDC330EB2F73A75600FC016E /* ProjectHailMary_CN.srt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ProjectHailMary_CN.srt; sourceTree = "<group>"; };
 		DB6451B693924A62DD8099B2 /* SRTParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRTParser.swift; sourceTree = "<group>"; };
 		F3F3668EAE2228D0D4E65981 /* MovieLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieLibrary.swift; sourceTree = "<group>"; };
+		F95981F5C98C68FEE0D147B6 /* ProjectHailMary_EN.srt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ProjectHailMary_EN.srt; sourceTree = "<group>"; };
 		F9C757B26F0F3904958F149D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9AC14C5985EC9140FCCB7294 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CED9E9962A60A83B50F0CEC3 /* Speech.framework in Frameworks */,
+				0C030EA0C2CE0CD7832FA255 /* AVFoundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		1786CF6BE93E20E983EC28D8 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				CDC330E92F73690E00FC016E /* ProjectHailMary_EN.srt */,
-				CDC330EB2F73A75600FC016E /* ProjectHailMary_CN.srt */,
+				7DB18A0412EC24D53662DC40 /* ProjectHailMary_CN.srt */,
+				F95981F5C98C68FEE0D147B6 /* ProjectHailMary_EN.srt */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -68,14 +88,25 @@
 			isa = PBXGroup;
 			children = (
 				D7B1C74DC9397FD1A8B18C85 /* MovieCompanion */,
+				66487D454C7E7300BA6825DE /* Frameworks */,
 				D909FBF4C9D2AA5485E814F7 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		66487D454C7E7300BA6825DE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7A9027513D7846AE05D62AC5 /* AVFoundation.framework */,
+				0528A321BDF0B910112DDCF7 /* Speech.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		852D0E19F61BB9076674B229 /* Services */ = {
 			isa = PBXGroup;
 			children = (
 				F3F3668EAE2228D0D4E65981 /* MovieLibrary.swift */,
+				734093A4733D325119B87113 /* SpeechSyncService.swift */,
 				DB6451B693924A62DD8099B2 /* SRTParser.swift */,
 			);
 			path = Services;
@@ -95,6 +126,7 @@
 			children = (
 				6686287B0FC08A6BD449F1C2 /* LanguageSelectionView.swift */,
 				B6BF540098B9FA07C9A296F0 /* MovieListView.swift */,
+				5B39175F5BE5A6A55CDDD110 /* SpeechSyncButton.swift */,
 				80BC0215FD0649A67E989C60 /* SplashView.swift */,
 				722F96FD9E6F5A6ADB81A018 /* SubtitlePlayerView.swift */,
 			);
@@ -133,6 +165,7 @@
 			buildPhases = (
 				54BC77BE436F5015FC3E4592 /* Sources */,
 				4D3FCD235647815D39F9268D /* Resources */,
+				9AC14C5985EC9140FCCB7294 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -184,8 +217,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				5EF6DBAEC2C9ECB4C959C0BF /* Assets.xcassets in Resources */,
-				CDC330EC2F73A75600FC016E /* ProjectHailMary_CN.srt in Resources */,
-				CDC330EA2F73690E00FC016E /* ProjectHailMary_EN.srt in Resources */,
+				F001C94670FBBF8250539B91 /* ProjectHailMary_CN.srt in Resources */,
+				699DA4B72E2B9E44095F7295 /* ProjectHailMary_EN.srt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -205,6 +238,8 @@
 				7B026EBC4CEAEA86EFF8A518 /* MovieListView.swift in Sources */,
 				ADB38B03DA0D37785D121ABB /* PlayerViewModel.swift in Sources */,
 				4DCED3BC1FC4420BBE2A6A88 /* SRTParser.swift in Sources */,
+				31CD4FAEB7FC402098795D0C /* SpeechSyncButton.swift in Sources */,
+				2B30BE6DEB84C92C0718B525 /* SpeechSyncService.swift in Sources */,
 				0F2612A9A02B79DF3B58168F /* SplashView.swift in Sources */,
 				A7D07D948F0B9B80703231D4 /* SubtitleLine.swift in Sources */,
 				10BFD59C25DC09ED2D30F6A0 /* SubtitlePlayerView.swift in Sources */,

@@ -11,6 +11,9 @@ targets:
     deploymentTarget: "16.0"
     sources:
       - MovieCompanion
+    dependencies:
+      - sdk: Speech.framework
+      - sdk: AVFoundation.framework
     settings:
       base:
         SWIFT_VERSION: "5.9"
@@ -27,6 +30,10 @@ targets:
         UIRequiresFullScreen: true
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
         CFBundleDisplayName: MovieCompanion
         CFBundleShortVersionString: "1.0"
         CFBundleVersion: "1"
+        NSMicrophoneUsageDescription: "MovieCompanion listens to the movie audio to automatically sync subtitles to the current scene."
+        NSSpeechRecognitionUsageDescription: "MovieCompanion uses speech recognition to match dialogue to the correct subtitle line."

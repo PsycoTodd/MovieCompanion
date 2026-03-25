@@ -19,13 +19,20 @@ struct SubtitlePlayerView: View {
             VStack(spacing: 0) {
                 Spacer()
 
-                // Subtitle display
-                Text(playerViewModel.currentLine?.text ?? "")
-                    .font(.system(size: fontSize, weight: .medium))
-                    .foregroundColor(.white)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 40)
-                    .animation(.easeInOut(duration: 0.25), value: playerViewModel.currentLine?.id)
+                // Subtitle display — shows live transcript in yellow while syncing
+                Group {
+                    if case .listening(let transcript) = playerViewModel.speechSyncState {
+                        Text(transcript.isEmpty ? "Listening…" : transcript)
+                            .foregroundColor(.yellow)
+                    } else {
+                        Text(playerViewModel.currentLine?.text ?? "")
+                            .foregroundColor(.white)
+                            .animation(.easeInOut(duration: 0.25), value: playerViewModel.currentLine?.id)
+                    }
+                }
+                .font(.system(size: fontSize, weight: .medium))
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 40)
 
                 Spacer()
 
@@ -60,6 +67,32 @@ struct SubtitlePlayerView: View {
         }
         .onChange(of: playerViewModel.totalDuration) { newValue in
             seekSliderValue = 0
+        }
+        .onChange(of: playerViewModel.speechSyncState) { state in
+            // Hold .matched state briefly so the green icon is visible, then go idle
+            if case .matched = state {
+                Task {
+                    try? await Task.sleep(nanoseconds: 800_000_000)
+                    playerViewModel.speechSyncState = .idle
+                }
+            }
+            // Reset failure alert flag when returning to idle
+            if case .idle = state {
+                playerViewModel.showSyncFailureAlert = false
+            }
+        }
+        .alert("Sync Failed", isPresented: $playerViewModel.showSyncFailureAlert) {
+            Button("Try Again") {
+                playerViewModel.showSyncFailureAlert = false
+                playerViewModel.speechSyncState = .idle
+                playerViewModel.toggleSync()
+            }
+            Button("Cancel", role: .cancel) {
+                playerViewModel.showSyncFailureAlert = false
+                playerViewModel.speechSyncState = .idle
+            }
+        } message: {
+            Text("No matching subtitle was found within 30 seconds. Make sure the movie audio is clearly audible.")
         }
     }
 
@@ -104,15 +137,29 @@ struct SubtitlePlayerView: View {
             }
             .padding(.horizontal, 20)
 
-            // Play / Pause button
-            Button {
-                playerViewModel.isPlaying ? playerViewModel.pause() : playerViewModel.play()
-            } label: {
-                Image(systemName: playerViewModel.isPlaying ? "pause.fill" : "play.fill")
-                    .font(.system(size: 36))
-                    .foregroundColor(.white)
-                    .frame(width: 60, height: 60)
+            // Play/Pause + Sync row
+            ZStack {
+                // Play / Pause — centred
+                Button {
+                    playerViewModel.isPlaying ? playerViewModel.pause() : playerViewModel.play()
+                } label: {
+                    Image(systemName: playerViewModel.isPlaying ? "pause.fill" : "play.fill")
+                        .font(.system(size: 36))
+                        .foregroundColor(.white)
+                        .frame(width: 60, height: 60)
+                }
+
+                // Mic / Sync — trailing
+                HStack {
+                    Spacer()
+                    SpeechSyncButton(
+                        state: playerViewModel.speechSyncState,
+                        onTap: { playerViewModel.toggleSync() }
+                    )
+                    .padding(.trailing, 28)
+                }
             }
+            .frame(height: 60)
         }
     }
 

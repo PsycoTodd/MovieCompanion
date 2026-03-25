@@ -6,6 +6,9 @@ class PlayerViewModel: ObservableObject {
     @Published var currentLine: SubtitleLine? = nil
     @Published var isPlaying: Bool = false
     @Published var elapsedTime: TimeInterval = 0
+    @Published var speechSyncState: SpeechSyncState = .idle
+    @Published var showSyncFailureAlert: Bool = false
+
     var totalDuration: TimeInterval = 0
     var onFinished: (() -> Void)? = nil
 
@@ -14,8 +17,15 @@ class PlayerViewModel: ObservableObject {
     private let tickInterval: TimeInterval = 0.1
     private let gracePeriod: TimeInterval = 1.5
 
+    private var loadedFileName: String = ""
+    private var speechSyncService: SpeechSyncService? = nil
+    private var speechSyncTask: Task<Void, Never>? = nil
+
+    // MARK: - Playback
+
     func load(fileName: String) {
         stop()
+        loadedFileName = fileName
         lines = SRTParser.parse(fileName: fileName)
         totalDuration = lines.last?.endTimestamp ?? lines.last?.timestamp ?? 0
         elapsedTime = 0
@@ -27,7 +37,6 @@ class PlayerViewModel: ObservableObject {
         isPlaying = true
         UIApplication.shared.isIdleTimerDisabled = true
 
-        // Use .common mode so the timer fires during slider drag (UITrackingRunLoopMode)
         let t = Timer(timeInterval: tickInterval, repeats: true) { [weak self] _ in
             Task { @MainActor [weak self] in self?.tick() }
         }
@@ -55,10 +64,11 @@ class PlayerViewModel: ObservableObject {
         elapsedTime = 0
         currentLine = nil
         UIApplication.shared.isIdleTimerDisabled = false
+        cancelSpeechSync()
     }
 
     private func tick() {
-        guard isPlaying else { return }  // ignore stale callbacks after pause
+        guard isPlaying else { return }
         elapsedTime += tickInterval
         updateCurrentLine()
 
@@ -73,5 +83,61 @@ class PlayerViewModel: ObservableObject {
 
     private func updateCurrentLine() {
         currentLine = lines.last { $0.timestamp <= elapsedTime }
+    }
+
+    // MARK: - Speech sync
+
+    func toggleSync() {
+        if case .listening = speechSyncState {
+            cancelSpeechSync()
+            speechSyncState = .idle
+            return
+        }
+
+
+        // Derive English file name: strip last _XX component, append _EN
+        let englishFileName = englishFileNameFrom(loadedFileName)
+
+        if speechSyncService == nil {
+            speechSyncService = SpeechSyncService()
+        }
+        guard let service = speechSyncService else { return }
+
+        speechSyncTask?.cancel()
+        speechSyncTask = Task {
+            let stream = await service.start(englishFileName: englishFileName)
+            for await state in stream {
+                self.speechSyncState = state
+                switch state {
+                case .matched(let timestamp):
+                    self.seek(to: timestamp)
+                    self.play()
+                case .failed:
+                    self.showSyncFailureAlert = true
+                default:
+                    break
+                }
+            }
+            // Stream finished — only reset if still listening.
+            // .matched and .failed transitions are owned by the view.
+            if case .listening = self.speechSyncState {
+                self.speechSyncState = .idle
+            }
+        }
+    }
+
+    private func cancelSpeechSync() {
+        speechSyncTask?.cancel()
+        speechSyncTask = nil
+        Task { await speechSyncService?.stop() }
+    }
+
+    /// Strips the last `_XX` language code and appends `_EN`.
+    /// e.g. "Inception_ZH" → "Inception_EN", "Inception_EN" → "Inception_EN"
+    private func englishFileNameFrom(_ fileName: String) -> String {
+        guard let range = fileName.range(of: "_", options: .backwards) else {
+            return fileName + "_EN"
+        }
+        return String(fileName[fileName.startIndex..<range.lowerBound]) + "_EN"
     }
 }
