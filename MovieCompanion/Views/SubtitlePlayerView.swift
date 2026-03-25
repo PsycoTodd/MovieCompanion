@@ -4,6 +4,7 @@ struct SubtitlePlayerView: View {
     let fileName: String
     let onFinished: () -> Void
 
+    @Environment(\.dismiss) private var dismiss
     @StateObject private var playerViewModel = PlayerViewModel()
     @State private var fontSize: Double = 28
     @State private var seekSliderValue: Double = 0
@@ -33,6 +34,18 @@ struct SubtitlePlayerView: View {
             }
         }
         .toolbar(.hidden, for: .navigationBar)
+        .overlay(alignment: .topLeading) {
+            Button {
+                dismiss()
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.white)
+                    .padding(12)
+            }
+            .padding(.leading, 8)
+            .padding(.top, 4)
+        }
         .onAppear {
             playerViewModel.onFinished = onFinished
             playerViewModel.load(fileName: fileName)

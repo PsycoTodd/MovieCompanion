@@ -18,5 +18,6 @@ struct LanguageSelectionView: View {
         .navigationTitle(movie.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbarColorScheme(.dark, for: .navigationBar)
+        .tint(.white)
     }
 }

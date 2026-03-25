@@ -20,6 +20,7 @@
 		A7D07D948F0B9B80703231D4 /* SubtitleLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EFFC3549EE549FAF3E5BC42 /* SubtitleLine.swift */; };
 		ADB38B03DA0D37785D121ABB /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30215C964F6612C9F1C31202 /* PlayerViewModel.swift */; };
 		CDC330EA2F73690E00FC016E /* ProjectHailMary_EN.srt in Resources */ = {isa = PBXBuildFile; fileRef = CDC330E92F73690E00FC016E /* ProjectHailMary_EN.srt */; };
+		CDC330EC2F73A75600FC016E /* ProjectHailMary_CN.srt in Resources */ = {isa = PBXBuildFile; fileRef = CDC330EB2F73A75600FC016E /* ProjectHailMary_CN.srt */; };
 		EF585C7578F1D954026A08D8 /* LanguageSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6686287B0FC08A6BD449F1C2 /* LanguageSelectionView.swift */; };
 /* End PBXBuildFile section */
 
@@ -37,6 +38,7 @@
 		A38635113E159D0B10E9BCCA /* MovieLibraryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieLibraryViewModel.swift; sourceTree = "<group>"; };
 		B6BF540098B9FA07C9A296F0 /* MovieListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieListView.swift; sourceTree = "<group>"; };
 		CDC330E92F73690E00FC016E /* ProjectHailMary_EN.srt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ProjectHailMary_EN.srt; sourceTree = "<group>"; };
+		CDC330EB2F73A75600FC016E /* ProjectHailMary_CN.srt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ProjectHailMary_CN.srt; sourceTree = "<group>"; };
 		DB6451B693924A62DD8099B2 /* SRTParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRTParser.swift; sourceTree = "<group>"; };
 		F3F3668EAE2228D0D4E65981 /* MovieLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieLibrary.swift; sourceTree = "<group>"; };
 		F9C757B26F0F3904958F149D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -47,6 +49,7 @@
 			isa = PBXGroup;
 			children = (
 				CDC330E92F73690E00FC016E /* ProjectHailMary_EN.srt */,
+				CDC330EB2F73A75600FC016E /* ProjectHailMary_CN.srt */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -181,6 +184,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5EF6DBAEC2C9ECB4C959C0BF /* Assets.xcassets in Resources */,
+				CDC330EC2F73A75600FC016E /* ProjectHailMary_CN.srt in Resources */,
 				CDC330EA2F73690E00FC016E /* ProjectHailMary_EN.srt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

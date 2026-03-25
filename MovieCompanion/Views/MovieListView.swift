@@ -26,5 +26,6 @@ struct MovieListView: View {
         .navigationTitle("MovieCompanion")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarColorScheme(.dark, for: .navigationBar)
+        .tint(.white)
     }
 }

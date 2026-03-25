@@ -27,9 +27,12 @@ class PlayerViewModel: ObservableObject {
         isPlaying = true
         UIApplication.shared.isIdleTimerDisabled = true
 
-        timer = Timer.scheduledTimer(withTimeInterval: tickInterval, repeats: true) { [weak self] _ in
-            DispatchQueue.main.async { self?.tick() }
+        // Use .common mode so the timer fires during slider drag (UITrackingRunLoopMode)
+        let t = Timer(timeInterval: tickInterval, repeats: true) { [weak self] _ in
+            Task { @MainActor [weak self] in self?.tick() }
         }
+        RunLoop.main.add(t, forMode: .common)
+        timer = t
     }
 
     func pause() {
@@ -55,6 +58,7 @@ class PlayerViewModel: ObservableObject {
     }
 
     private func tick() {
+        guard isPlaying else { return }  // ignore stale callbacks after pause
         elapsedTime += tickInterval
         updateCurrentLine()
 
