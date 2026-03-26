@@ -23,6 +23,10 @@
 		91A8967D158A46E1E2E17DF1 /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D1D17321A2A4BC7A102EA5D /* Movie.swift */; };
 		A7D07D948F0B9B80703231D4 /* SubtitleLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EFFC3549EE549FAF3E5BC42 /* SubtitleLine.swift */; };
 		ADB38B03DA0D37785D121ABB /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30215C964F6612C9F1C31202 /* PlayerViewModel.swift */; };
+		CD9B3E422F74E6F100417A4C /* StandByMe_CN.srt in Resources */ = {isa = PBXBuildFile; fileRef = CD9B3E412F74E6F000417A4C /* StandByMe_CN.srt */; };
+		CD9B3E442F74E70300417A4C /* StandByMe_EN.srt in Resources */ = {isa = PBXBuildFile; fileRef = CD9B3E432F74E70300417A4C /* StandByMe_EN.srt */; };
+		CD9B3E462F74E76900417A4C /* WarMachine_CN.srt in Resources */ = {isa = PBXBuildFile; fileRef = CD9B3E452F74E76900417A4C /* WarMachine_CN.srt */; };
+		CD9B3E482F74E77B00417A4C /* WarMachine_EN.srt in Resources */ = {isa = PBXBuildFile; fileRef = CD9B3E472F74E77B00417A4C /* WarMachine_EN.srt */; };
 		CED9E9962A60A83B50F0CEC3 /* Speech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0528A321BDF0B910112DDCF7 /* Speech.framework */; };
 		EF585C7578F1D954026A08D8 /* LanguageSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6686287B0FC08A6BD449F1C2 /* LanguageSelectionView.swift */; };
 		F001C94670FBBF8250539B91 /* ProjectHailMary_CN.srt in Resources */ = {isa = PBXBuildFile; fileRef = 7DB18A0412EC24D53662DC40 /* ProjectHailMary_CN.srt */; };
@@ -46,6 +50,10 @@
 		8268684B52A970DEAB5BE1D5 /* MovieCompanionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCompanionApp.swift; sourceTree = "<group>"; };
 		A38635113E159D0B10E9BCCA /* MovieLibraryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieLibraryViewModel.swift; sourceTree = "<group>"; };
 		B6BF540098B9FA07C9A296F0 /* MovieListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieListView.swift; sourceTree = "<group>"; };
+		CD9B3E412F74E6F000417A4C /* StandByMe_CN.srt */ = {isa = PBXFileReference; lastKnownFileType = text; path = StandByMe_CN.srt; sourceTree = "<group>"; };
+		CD9B3E432F74E70300417A4C /* StandByMe_EN.srt */ = {isa = PBXFileReference; lastKnownFileType = text; path = StandByMe_EN.srt; sourceTree = "<group>"; };
+		CD9B3E452F74E76900417A4C /* WarMachine_CN.srt */ = {isa = PBXFileReference; lastKnownFileType = text; path = WarMachine_CN.srt; sourceTree = "<group>"; };
+		CD9B3E472F74E77B00417A4C /* WarMachine_EN.srt */ = {isa = PBXFileReference; lastKnownFileType = text; path = WarMachine_EN.srt; sourceTree = "<group>"; };
 		DB6451B693924A62DD8099B2 /* SRTParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRTParser.swift; sourceTree = "<group>"; };
 		F3F3668EAE2228D0D4E65981 /* MovieLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieLibrary.swift; sourceTree = "<group>"; };
 		F95981F5C98C68FEE0D147B6 /* ProjectHailMary_EN.srt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ProjectHailMary_EN.srt; sourceTree = "<group>"; };
@@ -68,8 +76,12 @@
 		1786CF6BE93E20E983EC28D8 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				CD9B3E452F74E76900417A4C /* WarMachine_CN.srt */,
+				CD9B3E472F74E77B00417A4C /* WarMachine_EN.srt */,
+				CD9B3E412F74E6F000417A4C /* StandByMe_CN.srt */,
 				7DB18A0412EC24D53662DC40 /* ProjectHailMary_CN.srt */,
 				F95981F5C98C68FEE0D147B6 /* ProjectHailMary_EN.srt */,
+				CD9B3E432F74E70300417A4C /* StandByMe_EN.srt */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -216,8 +228,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD9B3E442F74E70300417A4C /* StandByMe_EN.srt in Resources */,
 				5EF6DBAEC2C9ECB4C959C0BF /* Assets.xcassets in Resources */,
 				F001C94670FBBF8250539B91 /* ProjectHailMary_CN.srt in Resources */,
+				CD9B3E462F74E76900417A4C /* WarMachine_CN.srt in Resources */,
+				CD9B3E422F74E6F100417A4C /* StandByMe_CN.srt in Resources */,
+				CD9B3E482F74E77B00417A4C /* WarMachine_EN.srt in Resources */,
 				699DA4B72E2B9E44095F7295 /* ProjectHailMary_EN.srt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -30,7 +30,6 @@ struct SubtitlePlayerView: View {
                             } else {
                                 Text(playerViewModel.currentLine?.text ?? "")
                                     .foregroundColor(.white)
-                                    .animation(.easeInOut(duration: 0.25), value: playerViewModel.currentLine?.id)
                             }
                         }
                         .font(.system(size: fontSize * pinchScale, weight: .medium))
