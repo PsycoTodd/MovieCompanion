@@ -37,11 +37,11 @@ actor SpeechSyncService {
 
     /// Starts a sync session. Returns an AsyncStream that emits state updates
     /// until .matched or .failed is emitted, then finishes.
-    func start(englishFileName: String, preloadedLines: [SubtitleLine]? = nil) -> AsyncStream<SpeechSyncState> {
+    func start(preloadedLines: [SubtitleLine]) -> AsyncStream<SpeechSyncState> {
         AsyncStream { continuation in
             self.continuation = continuation
             Task {
-                await self.run(englishFileName: englishFileName, preloadedLines: preloadedLines)
+                await self.run(preloadedLines: preloadedLines)
             }
         }
     }
@@ -52,7 +52,7 @@ actor SpeechSyncService {
 
     // MARK: - Core pipeline
 
-    private func run(englishFileName: String, preloadedLines: [SubtitleLine]? = nil) async {
+    private func run(preloadedLines: [SubtitleLine]) async {
         // Cooldown guard
         if Date().timeIntervalSince(lastStopTime) < cooldown {
             try? await Task.sleep(nanoseconds: UInt64(cooldown * 1_000_000_000))
@@ -74,12 +74,11 @@ actor SpeechSyncService {
 
         // 3. Build index if needed
         if index == nil {
-            let lines = preloadedLines ?? SRTParser.parse(fileName: englishFileName)
-            guard !lines.isEmpty else {
+            guard !preloadedLines.isEmpty else {
                 emit(.failed(.noEnglishSubtitles))
                 return
             }
-            index = buildIndex(from: lines)
+            index = buildIndex(from: preloadedLines)
         }
 
         // 4. Set up recognizer

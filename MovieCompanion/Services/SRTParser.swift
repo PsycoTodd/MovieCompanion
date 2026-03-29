@@ -1,14 +1,6 @@
 import Foundation
 
 struct SRTParser {
-    static func parse(fileName: String) -> [SubtitleLine] {
-        guard let url = Bundle.main.url(forResource: fileName, withExtension: "srt"),
-              let rawContent = try? String(contentsOf: url, encoding: .utf8) else {
-            return []
-        }
-        return parseContent(rawContent)
-    }
-
     static func parseContent(_ rawContent: String) -> [SubtitleLine] {
         // Normalize line endings and strip BOM
         let content = rawContent
@@ -26,7 +18,6 @@ struct SRTParser {
 
             guard blockLines.count >= 2 else { continue }
 
-            // Find the timestamp line (contains " --> ")
             guard let tsIndex = blockLines.firstIndex(where: { $0.contains(" --> ") }),
                   let (startTime, endTime) = parseTimestampLine(blockLines[tsIndex]) else { continue }
 
@@ -56,7 +47,6 @@ struct SRTParser {
     }
 
     private static func parseTimestamp(_ str: String) -> TimeInterval? {
-        // Format: HH:MM:SS,mmm
         let normalized = str.replacingOccurrences(of: ",", with: ".")
         let parts = normalized.split(separator: ":")
         guard parts.count == 3,

@@ -14,7 +14,6 @@ class MovieLibraryViewModel: ObservableObject {
     }
 
     init() {
-        movies = MovieLibrary.loadAll()
         Task { await loadRemoteMovies() }
     }
 
@@ -28,20 +27,10 @@ class MovieLibraryViewModel: ObservableObject {
         isLoadingRemote = true
         remoteError = nil
         do {
-            let remoteMovies = try await RemoteSubtitleLoader.loadManifest(from: url)
-            mergeRemoteMovies(remoteMovies)
+            movies = try await RemoteSubtitleLoader.loadManifest(from: url)
         } catch {
             remoteError = error.localizedDescription
         }
         isLoadingRemote = false
-    }
-
-    private func mergeRemoteMovies(_ remoteMovies: [Movie]) {
-        var merged = MovieLibrary.loadAll()
-        let bundleTitles = Set(merged.map { $0.title.lowercased() })
-        for movie in remoteMovies where !bundleTitles.contains(movie.title.lowercased()) {
-            merged.append(movie)
-        }
-        movies = merged.sorted { $0.title < $1.title }
     }
 }

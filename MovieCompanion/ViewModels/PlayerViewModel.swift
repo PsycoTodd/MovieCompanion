@@ -15,17 +15,14 @@ class PlayerViewModel: ObservableObject {
     var onFinished: (() -> Void)? = nil
 
     private var lines: [SubtitleLine] = []
+    private var englishLines: [SubtitleLine] = []
     private var timer: Timer? = nil
     private let tickInterval: TimeInterval = 0.1
     private let gracePeriod: TimeInterval = 1.5
 
     // Seconds added to the matched timestamp to compensate for speech recognition latency.
-    // Increase if subtitles appear behind the dialogue; decrease if they run ahead.
     var syncOffset: TimeInterval = 1.5
 
-    private var loadedFileName: String = ""
-    private var isRemote: Bool = false
-    private var englishLines: [SubtitleLine] = []
     private var speechSyncService: SpeechSyncService? = nil
     private var speechSyncTask: Task<Void, Never>? = nil
 
@@ -33,37 +30,28 @@ class PlayerViewModel: ObservableObject {
 
     func load(language: Language) {
         stop()
-        loadedFileName = language.fileName
-        isRemote = language.remoteURL != nil
         subtitleLoadError = nil
+        isLoadingSubtitles = true
 
-        if let remoteURL = language.remoteURL {
-            isLoadingSubtitles = true
-            Task {
-                do {
-                    async let subtitlesFetch = RemoteSubtitleLoader.loadSRT(from: remoteURL)
-                    async let englishFetch: [SubtitleLine] = {
-                        if let enURL = language.englishRemoteURL {
-                            return (try? await RemoteSubtitleLoader.loadSRT(from: enURL)) ?? []
-                        }
-                        return []
-                    }()
-                    let (loaded, english) = try await (subtitlesFetch, englishFetch)
-                    self.lines = loaded
-                    self.englishLines = english
-                    self.totalDuration = loaded.last?.endTimestamp ?? loaded.last?.timestamp ?? 0
-                    self.elapsedTime = 0
-                    self.currentLine = nil
-                } catch {
-                    self.subtitleLoadError = error.localizedDescription
-                }
-                self.isLoadingSubtitles = false
+        Task {
+            do {
+                async let subtitlesFetch = RemoteSubtitleLoader.loadSRT(from: language.remoteURL!)
+                async let englishFetch: [SubtitleLine] = {
+                    if let enURL = language.englishRemoteURL {
+                        return (try? await RemoteSubtitleLoader.loadSRT(from: enURL)) ?? []
+                    }
+                    return []
+                }()
+                let (loaded, english) = try await (subtitlesFetch, englishFetch)
+                self.lines = loaded
+                self.englishLines = english
+                self.totalDuration = loaded.last?.endTimestamp ?? loaded.last?.timestamp ?? 0
+                self.elapsedTime = 0
+                self.currentLine = nil
+            } catch {
+                self.subtitleLoadError = error.localizedDescription
             }
-        } else {
-            lines = SRTParser.parse(fileName: language.fileName)
-            totalDuration = lines.last?.endTimestamp ?? lines.last?.timestamp ?? 0
-            elapsedTime = 0
-            currentLine = nil
+            self.isLoadingSubtitles = false
         }
     }
 
@@ -123,7 +111,7 @@ class PlayerViewModel: ObservableObject {
 
     // MARK: - Speech sync
 
-    var isSpeechSyncAvailable: Bool { !isRemote || !englishLines.isEmpty }
+    var isSpeechSyncAvailable: Bool { !englishLines.isEmpty }
 
     func toggleSync() {
         if case .listening = speechSyncState {
@@ -132,19 +120,14 @@ class PlayerViewModel: ObservableObject {
             return
         }
 
-
-        // Derive English file name: strip last _XX component, append _EN
-        let englishFileName = englishFileNameFrom(loadedFileName)
-
         if speechSyncService == nil {
             speechSyncService = SpeechSyncService()
         }
         guard let service = speechSyncService else { return }
 
         speechSyncTask?.cancel()
-        let preloaded = englishLines.isEmpty ? nil : englishLines
         speechSyncTask = Task {
-            let stream = await service.start(englishFileName: englishFileName, preloadedLines: preloaded)
+            let stream = await service.start(preloadedLines: englishLines)
             for await state in stream {
                 self.speechSyncState = state
                 switch state {
@@ -157,8 +140,6 @@ class PlayerViewModel: ObservableObject {
                     break
                 }
             }
-            // Stream finished — only reset if still listening.
-            // .matched and .failed transitions are owned by the view.
             if case .listening = self.speechSyncState {
                 self.speechSyncState = .idle
             }
@@ -169,14 +150,5 @@ class PlayerViewModel: ObservableObject {
         speechSyncTask?.cancel()
         speechSyncTask = nil
         Task { await speechSyncService?.stop() }
-    }
-
-    /// Strips the last `_XX` language code and appends `_EN`.
-    /// e.g. "Inception_ZH" → "Inception_EN", "Inception_EN" → "Inception_EN"
-    private func englishFileNameFrom(_ fileName: String) -> String {
-        guard let range = fileName.range(of: "_", options: .backwards) else {
-            return fileName + "_EN"
-        }
-        return String(fileName[fileName.startIndex..<range.lowerBound]) + "_EN"
     }
 }
