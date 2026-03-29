@@ -7,7 +7,7 @@ import AVFoundation
 enum SpeechSyncState: Equatable {
     case idle
     case listening(String)     // carries the live partial transcript
-    case matched(TimeInterval)
+    case matched(TimeInterval, offset: TimeInterval)
     case failed(SpeechSyncError)
 }
 
@@ -32,6 +32,9 @@ actor SpeechSyncService {
     private var continuation: AsyncStream<SpeechSyncState>.Continuation? = nil
     private var lastStopTime: Date = .distantPast
     private let cooldown: TimeInterval = 2
+    private var resultTimestamps: [Date] = []
+    private let timestampQueueSize = 5
+    private let audioLatencyBuffer: TimeInterval = 0.5
 
     // MARK: Public interface
 
@@ -148,8 +151,19 @@ actor SpeechSyncService {
 
         if let result {
             let transcript = result.bestTranscription.formattedString
+            // Maintain a rolling queue of the last N result arrival times.
+            // queue.first = when the first word of our detection window was received.
+            if !transcript.isEmpty {
+                resultTimestamps.append(Date())
+                if resultTimestamps.count > timestampQueueSize {
+                    resultTimestamps.removeFirst()
+                }
+            }
+
             if let match = findMatch(in: transcript) {
-                emit(.matched(match.timestamp))
+                let windowStart = resultTimestamps.first ?? Date()
+                let offset = Date().timeIntervalSince(windowStart) + audioLatencyBuffer
+                emit(.matched(match.timestamp, offset: offset))
                 tearDown()
                 return
             }
@@ -187,6 +201,7 @@ actor SpeechSyncService {
         continuation?.finish()
         continuation = nil
         lastStopTime = Date()
+        resultTimestamps = []
     }
 
     private func emit(_ state: SpeechSyncState) {

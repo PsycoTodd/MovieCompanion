@@ -20,9 +20,6 @@ class PlayerViewModel: ObservableObject {
     private let tickInterval: TimeInterval = 0.1
     private let gracePeriod: TimeInterval = 1.5
 
-    // Seconds added to the matched timestamp to compensate for speech recognition latency.
-    var syncOffset: TimeInterval = 1.5
-
     private var speechSyncService: SpeechSyncService? = nil
     private var speechSyncTask: Task<Void, Never>? = nil
 
@@ -131,8 +128,8 @@ class PlayerViewModel: ObservableObject {
             for await state in stream {
                 self.speechSyncState = state
                 switch state {
-                case .matched(let timestamp):
-                    self.seek(to: timestamp + self.syncOffset)
+                case .matched(let timestamp, let offset):
+                    self.seek(to: timestamp + offset)
                     self.play()
                 case .failed:
                     self.showSyncFailureAlert = true
