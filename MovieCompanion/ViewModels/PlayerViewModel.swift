@@ -25,6 +25,7 @@ class PlayerViewModel: ObservableObject {
 
     private var loadedFileName: String = ""
     private var isRemote: Bool = false
+    private var englishLines: [SubtitleLine] = []
     private var speechSyncService: SpeechSyncService? = nil
     private var speechSyncTask: Task<Void, Never>? = nil
 
@@ -40,8 +41,16 @@ class PlayerViewModel: ObservableObject {
             isLoadingSubtitles = true
             Task {
                 do {
-                    let loaded = try await RemoteSubtitleLoader.loadSRT(from: remoteURL)
+                    async let subtitlesFetch = RemoteSubtitleLoader.loadSRT(from: remoteURL)
+                    async let englishFetch: [SubtitleLine] = {
+                        if let enURL = language.englishRemoteURL {
+                            return (try? await RemoteSubtitleLoader.loadSRT(from: enURL)) ?? []
+                        }
+                        return []
+                    }()
+                    let (loaded, english) = try await (subtitlesFetch, englishFetch)
                     self.lines = loaded
+                    self.englishLines = english
                     self.totalDuration = loaded.last?.endTimestamp ?? loaded.last?.timestamp ?? 0
                     self.elapsedTime = 0
                     self.currentLine = nil
@@ -89,6 +98,7 @@ class PlayerViewModel: ObservableObject {
         timer = nil
         elapsedTime = 0
         currentLine = nil
+        englishLines = []
         UIApplication.shared.isIdleTimerDisabled = false
         cancelSpeechSync()
     }
@@ -113,10 +123,9 @@ class PlayerViewModel: ObservableObject {
 
     // MARK: - Speech sync
 
-    var isSpeechSyncAvailable: Bool { !isRemote }
+    var isSpeechSyncAvailable: Bool { !isRemote || !englishLines.isEmpty }
 
     func toggleSync() {
-        guard !isRemote else { return }
         if case .listening = speechSyncState {
             cancelSpeechSync()
             speechSyncState = .idle
@@ -133,8 +142,9 @@ class PlayerViewModel: ObservableObject {
         guard let service = speechSyncService else { return }
 
         speechSyncTask?.cancel()
+        let preloaded = englishLines.isEmpty ? nil : englishLines
         speechSyncTask = Task {
-            let stream = await service.start(englishFileName: englishFileName)
+            let stream = await service.start(englishFileName: englishFileName, preloadedLines: preloaded)
             for await state in stream {
                 self.speechSyncState = state
                 switch state {
