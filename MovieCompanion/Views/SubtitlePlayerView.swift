@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SubtitlePlayerView: View {
-    let fileName: String
+    let language: Language
     let onFinished: () -> Void
 
     @Environment(\.dismiss) private var dismiss
@@ -24,17 +24,28 @@ struct SubtitlePlayerView: View {
                 Color.clear
                     .overlay(
                         Group {
-                            if case .listening(let transcript) = playerViewModel.speechSyncState {
+                            if playerViewModel.isLoadingSubtitles {
+                                ProgressView()
+                                    .tint(.white)
+                            } else if let error = playerViewModel.subtitleLoadError {
+                                Text("Failed to load subtitles:\n\(error)")
+                                    .foregroundColor(.red)
+                                    .multilineTextAlignment(.center)
+                                    .padding(.horizontal, 40)
+                            } else if case .listening(let transcript) = playerViewModel.speechSyncState {
                                 Text(transcript.isEmpty ? "Listening…" : transcript)
                                     .foregroundColor(.yellow)
+                                    .font(.system(size: fontSize * pinchScale, weight: .medium))
+                                    .multilineTextAlignment(.center)
+                                    .padding(.horizontal, 40)
                             } else {
                                 Text(playerViewModel.currentLine?.text ?? "")
                                     .foregroundColor(.white)
+                                    .font(.system(size: fontSize * pinchScale, weight: .medium))
+                                    .multilineTextAlignment(.center)
+                                    .padding(.horizontal, 40)
                             }
                         }
-                        .font(.system(size: fontSize * pinchScale, weight: .medium))
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 40)
                     )
                     .contentShape(Rectangle())
                     .gesture(
@@ -66,7 +77,7 @@ struct SubtitlePlayerView: View {
         }
         .onAppear {
             playerViewModel.onFinished = onFinished
-            playerViewModel.load(fileName: fileName)
+            playerViewModel.load(language: language)
         }
         .onDisappear {
             playerViewModel.stop()
@@ -147,14 +158,16 @@ struct SubtitlePlayerView: View {
                         .frame(width: 60, height: 60)
                 }
 
-                // Mic / Sync — trailing
-                HStack {
-                    Spacer()
-                    SpeechSyncButton(
-                        state: playerViewModel.speechSyncState,
-                        onTap: { playerViewModel.toggleSync() }
-                    )
-                    .padding(.trailing, 28)
+                // Mic / Sync — trailing (bundle files only)
+                if playerViewModel.isSpeechSyncAvailable {
+                    HStack {
+                        Spacer()
+                        SpeechSyncButton(
+                            state: playerViewModel.speechSyncState,
+                            onTap: { playerViewModel.toggleSync() }
+                        )
+                        .padding(.trailing, 28)
+                    }
                 }
             }
             .frame(height: 60)

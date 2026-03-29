@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MovieListView: View {
     @EnvironmentObject var libraryViewModel: MovieLibraryViewModel
+    @State private var showSettings = false
 
     var body: some View {
         List(libraryViewModel.movies) { movie in
@@ -27,5 +28,19 @@ struct MovieListView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbarColorScheme(.dark, for: .navigationBar)
         .tint(.white)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    showSettings = true
+                } label: {
+                    Image(systemName: "gear")
+                        .foregroundColor(.white)
+                }
+            }
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
+                .environmentObject(libraryViewModel)
+        }
     }
 }

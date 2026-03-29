@@ -25,7 +25,7 @@ struct AppRootView: View {
                         }
                         .navigationDestination(for: Language.self) { language in
                             SubtitlePlayerView(
-                                fileName: language.fileName,
+                                language: language,
                                 onFinished: {
                                     navigationPath.removeLast(navigationPath.count)
                                 }

@@ -8,6 +8,8 @@ class PlayerViewModel: ObservableObject {
     @Published var elapsedTime: TimeInterval = 0
     @Published var speechSyncState: SpeechSyncState = .idle
     @Published var showSyncFailureAlert: Bool = false
+    @Published var isLoadingSubtitles: Bool = false
+    @Published var subtitleLoadError: String? = nil
 
     var totalDuration: TimeInterval = 0
     var onFinished: (() -> Void)? = nil
@@ -22,18 +24,38 @@ class PlayerViewModel: ObservableObject {
     var syncOffset: TimeInterval = 1.5
 
     private var loadedFileName: String = ""
+    private var isRemote: Bool = false
     private var speechSyncService: SpeechSyncService? = nil
     private var speechSyncTask: Task<Void, Never>? = nil
 
     // MARK: - Playback
 
-    func load(fileName: String) {
+    func load(language: Language) {
         stop()
-        loadedFileName = fileName
-        lines = SRTParser.parse(fileName: fileName)
-        totalDuration = lines.last?.endTimestamp ?? lines.last?.timestamp ?? 0
-        elapsedTime = 0
-        currentLine = nil
+        loadedFileName = language.fileName
+        isRemote = language.remoteURL != nil
+        subtitleLoadError = nil
+
+        if let remoteURL = language.remoteURL {
+            isLoadingSubtitles = true
+            Task {
+                do {
+                    let loaded = try await RemoteSubtitleLoader.loadSRT(from: remoteURL)
+                    self.lines = loaded
+                    self.totalDuration = loaded.last?.endTimestamp ?? loaded.last?.timestamp ?? 0
+                    self.elapsedTime = 0
+                    self.currentLine = nil
+                } catch {
+                    self.subtitleLoadError = error.localizedDescription
+                }
+                self.isLoadingSubtitles = false
+            }
+        } else {
+            lines = SRTParser.parse(fileName: language.fileName)
+            totalDuration = lines.last?.endTimestamp ?? lines.last?.timestamp ?? 0
+            elapsedTime = 0
+            currentLine = nil
+        }
     }
 
     func play() {
@@ -91,7 +113,10 @@ class PlayerViewModel: ObservableObject {
 
     // MARK: - Speech sync
 
+    var isSpeechSyncAvailable: Bool { !isRemote }
+
     func toggleSync() {
+        guard !isRemote else { return }
         if case .listening = speechSyncState {
             cancelSpeechSync()
             speechSyncState = .idle

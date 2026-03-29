@@ -1,43 +1,44 @@
 import Foundation
 
-struct MovieLibrary {
-    static func loadAll() -> [Movie] {
-        guard let urls = Bundle.main.urls(forResourcesWithExtension: "srt", subdirectory: nil) else {
-            return []
-        }
+struct RemoteSubtitleLoader {
+    private struct ManifestEntry: Decodable {
+        let name: String
+        let url: String
+    }
+
+    static func loadManifest(from manifestURL: URL) async throws -> [Movie] {
+        let (data, _) = try await URLSession.shared.data(from: manifestURL)
+        let entries = try JSONDecoder().decode([ManifestEntry].self, from: data)
 
         var languagesBySlug: [String: [Language]] = [:]
         var titleBySlug: [String: String] = [:]
 
-        for url in urls {
-            let stem = url.deletingPathExtension().lastPathComponent
-
-            // Split on the last underscore to separate title and language code
+        for entry in entries {
+            let stem = (entry.name as NSString).deletingPathExtension
             guard let underscoreRange = stem.range(of: "_", options: .backwards) else { continue }
 
             let titleRaw = String(stem[stem.startIndex..<underscoreRange.lowerBound])
             let languageCode = String(stem[underscoreRange.upperBound...])
-
             guard !titleRaw.isEmpty, !languageCode.isEmpty else { continue }
+            guard let downloadURL = URL(string: entry.url) else { continue }
 
             let slug = titleRaw.lowercased()
-            let displayTitle = titleRaw
+            titleBySlug[slug] = titleRaw
                 .replacingOccurrences(of: "_", with: " ")
                 .replacingOccurrences(of: "-", with: " ")
 
-            titleBySlug[slug] = displayTitle
-
             let language = Language(
                 code: languageCode.uppercased(),
-                displayName: displayName(for: languageCode),
-                fileName: stem
+                displayName: MovieLibrary.displayName(for: languageCode),
+                fileName: stem,
+                remoteURL: downloadURL
             )
             languagesBySlug[slug, default: []].append(language)
         }
 
         return languagesBySlug.map { slug, languages in
             Movie(
-                id: slug,
+                id: "remote_\(slug)",
                 title: titleBySlug[slug] ?? slug,
                 languages: languages.sorted { $0.displayName < $1.displayName }
             )
@@ -45,16 +46,11 @@ struct MovieLibrary {
         .sorted { $0.title < $1.title }
     }
 
-    static func displayName(for code: String) -> String {
-        switch code.uppercased() {
-        case "EN": return "English"
-        case "ZH": return "Chinese"
-        case "FR": return "French"
-        case "ES": return "Spanish"
-        case "JA": return "Japanese"
-        case "KO": return "Korean"
-        case "DE": return "German"
-        default: return code.uppercased()
+    static func loadSRT(from url: URL) async throws -> [SubtitleLine] {
+        let (data, _) = try await URLSession.shared.data(from: url)
+        guard let rawContent = String(data: data, encoding: .utf8) else {
+            throw URLError(.cannotDecodeContentData)
         }
+        return SRTParser.parseContent(rawContent)
     }
 }

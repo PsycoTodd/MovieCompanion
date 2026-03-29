@@ -6,7 +6,10 @@ struct SRTParser {
               let rawContent = try? String(contentsOf: url, encoding: .utf8) else {
             return []
         }
+        return parseContent(rawContent)
+    }
 
+    static func parseContent(_ rawContent: String) -> [SubtitleLine] {
         // Normalize line endings and strip BOM
         let content = rawContent
             .replacingOccurrences(of: "\r\n", with: "\n")
