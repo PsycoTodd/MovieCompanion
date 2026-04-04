@@ -40,3 +40,6 @@ Carthage/Build/
 
 # Resources (SRT files and other local assets)
 MovieCompanion/Resources/
+
+# Claude Code local config
+.claude/
