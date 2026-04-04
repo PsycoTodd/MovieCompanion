@@ -41,7 +41,9 @@ class PlayerViewModel: ObservableObject {
                 }()
                 let (loaded, english) = try await (subtitlesFetch, englishFetch)
                 self.lines = loaded
-                self.englishLines = english
+                // If no separate English track exists (e.g. user chose English as display
+                // language), use the display-language lines for speech matching directly.
+                self.englishLines = english.isEmpty ? loaded : english
                 self.totalDuration = loaded.last?.endTimestamp ?? loaded.last?.timestamp ?? 0
                 self.elapsedTime = 0
                 self.currentLine = nil
@@ -108,7 +110,7 @@ class PlayerViewModel: ObservableObject {
 
     // MARK: - Speech sync
 
-    var isSpeechSyncAvailable: Bool { !englishLines.isEmpty }
+    var isSpeechSyncAvailable: Bool { !lines.isEmpty }
 
     func toggleSync() {
         if case .listening = speechSyncState {
